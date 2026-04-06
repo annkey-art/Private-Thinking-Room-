@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Thinking Room</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      text-align: center;
+      padding: 40px;
+      margin: 0;
+    }
+
+    h1 {
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .input-box {
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #1b1b1b;
+      color: #eee;
+      font-size: 16px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .buttons button,
+    .main-btn,
+    .choice-btn {
+      margin: 8px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #222;
+      color: #eee;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 15px;
+    }
+
+    .buttons button:hover,
+    .main-btn:hover,
+    .choice-btn:hover {
+      background: #444;
+    }
+
+    .main-btn {
+      background: #8c6b3f;
+      color: #fff;
+    }
+
+    .main-btn:hover {
+      background: #a47a42;
+    }
+
+    #output {
+      max-width: 800px;
+      margin: 40px auto 0;
+      text-align: left;
+    }
+
+    .message {
+      background: #1a1a1a;
+      border: 1px solid #2f2f2f;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .flower {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Private Thinking Room</h1>
+  <p>Enter. Think freely. Leave stronger.</p>
+
+  <div class="input-box">
+    <textarea id="question" placeholder="What is on your mind right now?"></textarea>
+    <br>
+    <button class="main-btn" onclick="consultAll()">Enter the room</button>
+    <button class="main-btn" onclick="clearRoom()">Clear room</button>
+  </div>
+
+  <div class="buttons">
+    <button onclick="talk('strategist')">🧠 Strategist</button>
+    <button onclick="talk('rebel')">🔥 Rebel</button>
+    <button onclick="talk('empath')">🌿 Empath</button>
+    <button onclick="talk('realist')">⚖️ Realist</button>
+    <button onclick="talk('trickster')">🎭 Trickster</button>
+    <button onclick="talk('observer')">🕯️ Observer</button>
+  </div>
+
+  <div id="output">
+    <div class="message">Choose one voice… or enter the room and hear them all.</div>
+  </div>
+
+  <div class="flower">🌸🌿🌸</div>
+
+  <script>
+    let count = 0;
+
+    function getQuestion() {
+      const q = document.getElementById("question").value.trim();
+      return q || "this situation";
+    }
+
+    function getMessage(role, q) {
+      const messages = {
+        strategist: `🧠 <strong>Strategist:</strong> If you follow "${q}" long-term, where does it actually lead?`,
+        rebel: `🔥 <strong>Rebel:</strong> What would happen if you stopped hesitating and tried a completely different approach to "${q}"?`,
+        empath: `🌿 <strong>Empath:</strong> How does "${q}" affect the people around you, and how does it affect you quietly?`,
+        realist: `⚖️ <strong>Realist:</strong> Strip "${q}" of emotion for a moment. What are the actual facts?`,
+        trickster: `🎭 <strong>Trickster:</strong> What if the opposite of what you believe about "${q}" is true?`,
+        observer: `🕯️ <strong>Observer:</strong> Don’t react yet. Just watch "${q}" for a moment. What becomes obvious when you stop pushing?`
+      };
+
+      return messages[role];
+    }
+
+    function showGate() {
+      document.getElementById("output").innerHTML = `
+        <div class="message">
+          <strong>Before we continue...</strong><br><br>
+          Do you want perspective,<br>
+          or are you just exploring?<br><br>
+
+          <button class="choice-btn" onclick="choose('explore')">Just exploring</button>
+          <button class="choice-btn" onclick="choose('show')">Show me</button>
+        </div>
+      `;
+    }
+
+    function talk(role) {
+      if (count >= 3) {
+        showGate();
+        return;
+      }
+
+      count++;
+      const q = getQuestion();
+      const output = document.getElementById("output");
+      output.innerHTML += `<div class="message">${getMessage(role, q)}</div>`;
+    }
+
+    function consultAll() {
+      if (count >= 3) {
+        showGate();
+        return;
+      }
+
+      count++;
+      const output = document.getElementById("output");
+      output.innerHTML = "";
+
+      const roles = ["strategist", "rebel", "empath", "realist", "trickster", "observer"];
+      roles.forEach(role => {
+        output.innerHTML += `<div class="message">${getMessage(role, getQuestion())}</div>`;
+      });
+    }
+
+    function choose(type) {
+      if (type === "explore") {
+        document.getElementById("output").innerHTML = `
+          <div class="message">
+            Then this is already enough.<br><br>
+            More answers won’t change anything yet.
+          </div>
+        `;
+      }
+
+      if (type === "show") {
+        document.getElementById("output").innerHTML = `
+          <div class="message">
+            Good.<br><br>
+            Do one small thing first.<br>
+            Then come back.<br><br>
+
+            <button class="choice-btn" onclick="continueRoom()">I did something</button>
+          </div>
+        `;
+      }
+    }
+
+    function continueRoom() {
+      count = 0;
+      document.getElementById("output").innerHTML = `
+        <div class="message">
+          Now we can actually talk.
+        </div>
+      `;
+    }
+
+    function clearRoom() {
+      count = 0;
+      document.getElementById("question").value = "";
+      document.getElementById("output").innerHTML =
+        `<div class="message">The room is quiet again.</div>`;
+    }
+  </script>
+
+</body>
+</html>
