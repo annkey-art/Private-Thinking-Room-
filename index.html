@@ -134,16 +134,47 @@
     }
 
     function getMessage(role, q) {
-      const messages = {
-        strategist: `🧠 <strong>Strategist:</strong> If you follow "${q}" long-term, where does it actually lead?`,
-        rebel: `🔥 <strong>Rebel:</strong> What would happen if you stopped hesitating and tried a completely different approach to "${q}"?`,
-        empath: `🌿 <strong>Empath:</strong> How does "${q}" affect the people around you, and how does it affect you quietly?`,
-        realist: `⚖️ <strong>Realist:</strong> Strip "${q}" of emotion for a moment. What are the actual facts?`,
-        trickster: `🎭 <strong>Trickster:</strong> What if the opposite of what you believe about "${q}" is true?`,
-        observer: `🕯️ <strong>Observer:</strong> Don’t react yet. Just watch "${q}" for a moment. What becomes obvious when you stop pushing?`
-      };
-      return messages[role];
-    }
+  const negative = ["tired", "hate", "can't", "dont", "sad", "overwhelmed", "no energy"];
+  const isLow = negative.some(word => q.toLowerCase().includes(word));
+
+  const variants = {
+    strategist: [
+      `🧠 <strong>Strategist:</strong> If "${q}" moves your life forward long-term, go.`,
+      `🧠 <strong>Strategist:</strong> Look at "${q}" as a pattern. Does it build or repeat?`
+    ],
+
+    rebel: [
+      `🔥 <strong>Rebel:</strong> If you feel resistance about "${q}", maybe don’t go.`,
+      `🔥 <strong>Rebel:</strong> What if skipping "${q}" changes everything?`
+    ],
+
+    empath: isLow ? [
+      `🌿 <strong>Empath:</strong> You sound tired. Maybe "${q}" is not the real problem.`,
+      `🌿 <strong>Empath:</strong> Be careful with yourself. You don’t have to push through everything.`
+    ] : [
+      `🌿 <strong>Empath:</strong> How does "${q}" affect you emotionally?`,
+      `🌿 <strong>Empath:</strong> Check how "${q}" feels, not just what it means.`
+    ],
+
+    realist: [
+      `⚖️ <strong>Realist:</strong> If "${q}" is required, then go.`,
+      `⚖️ <strong>Realist:</strong> Remove emotion. What is objectively needed about "${q}"?`
+    ],
+
+    trickster: [
+      `🎭 <strong>Trickster:</strong> Why are you asking about "${q}" if you already suspect the answer?`,
+      `🎭 <strong>Trickster:</strong> Maybe "${q}" is just distraction from something bigger.`
+    ],
+
+    observer: [
+      `🕯️ <strong>Observer:</strong> Watch your reaction to "${q}". That’s the real answer.`,
+      `🕯️ <strong>Observer:</strong> You already know. You’re just delaying it.`
+    ]
+  };
+
+  const options = variants[role];
+  return options[Math.floor(Math.random() * options.length)];
+      }
 
     function showGate() {
       document.getElementById("output").innerHTML = `
